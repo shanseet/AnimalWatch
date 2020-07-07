@@ -1,0 +1,23 @@
+<%- include ('partials/header') %>
+
+<div class="jumbotron">
+    <h1 class="display-4">Animals</h1>
+    <a class="btn btn-outline-dark btn-md mt-4" href="/animals/new">Add an animal</a>
+</div>
+
+
+<div class="row text-center">
+    <% animals.forEach((animal) => { %>
+    <div class="col-sm-3 col-6">
+        <div class="card p-1 mb-4">
+            <img src="<%=animal.image%>" class="card-img-top" alt="animal">
+            <div class="card-body p-2">
+                <h6 class="card-title my-1"><%= animal.name %></h6>
+                <a href="/animals/<%=animal._id%>" class="card-link">Find out more</a>
+            </div>
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+<%- include ('partials/footer') %>

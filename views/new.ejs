@@ -1,0 +1,22 @@
+<%- include ('partials/header') %>
+
+
+<div class="w-50 mx-auto">
+    <form class="text-center py-3" action="/animals" method="POST">
+        <h3>Add an animal!</h3>
+        <div class="form-group">
+            <input type="text" class="form-control" name="name" placeholder="Name">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="url" placeholder="Image">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" name="description" placeholder="Description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark btn-block">Submit</button>
+    </form>
+    <a href="/animals">Back to animals</a>
+</div>
+
+
+<%- include ('partials/footer') %>
