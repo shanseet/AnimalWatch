@@ -1,15 +1,22 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const { text } = require('express');
+
+const express   = require('express'),
+    app         = express(),
+    bodyParser  = require('body-parser'),
+    mongoose    = require('mongoose'),
+    Animal      = require("./models/animal"),
+    Comment     = require("./models/comment"),
+    seedDB      = require("./seeds");
 
 // look for ejs files
 app.set("view engine", "ejs");
+
 // for stylesheets
-app.use(express.static("public"));
+app.use(express.static(__dirname + "public"));
+// dirname - refers to current dir, to be safe
+
 // parse req bodies
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 // connect mongoose
 mongoose.connect('mongodb://localhost/animal_watch', {
@@ -18,14 +25,7 @@ mongoose.connect('mongodb://localhost/animal_watch', {
     useFindAndModify: false,
 });
 
-// Define schema
-const animalSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-let Animal = mongoose.model("Animal", animalSchema)
+// seedDB();
 
 // Routes
 app.get("/", (req, res) => {
@@ -34,15 +34,18 @@ app.get("/", (req, res) => {
 
 // RESTful routing: an architecture to map HTTP routes to CRUD functionality (7 routes)
 // (CRUD: Create Read Update Destroy)
-// INDEX (get)   /x       display list of all items
-// CREATE (post) /x       post route for creating item
-// NEW (get)     /x/new   display form for creating item
-// SHOW (get)    /x/:id   shows info about 1 item   
+// INDEX (get)   /x           display list of all items
+// CREATE (post) /x           post route for creating item
+// NEW (get)     /x/new       display form for creating item
+// SHOW (get)    /x/:id       shows info about 1 item
+// EDIT (get)    /x/:id/edit  update 1 item, and then redirect somewhere else
+// UPDATE (put)  /x/:id       post route for editing item
+// DESTROY       /x/:id       delete the item
 
 app.get("/animals", (req, res) => {
     Animal.find({}, (err, animals) => {
         if (!err) {
-            res.render('animals', { animals: animals })
+            res.render('animals/index', { animals: animals })
         }
     })
 })
@@ -59,17 +62,42 @@ app.post("/animals", (req, res) => {
 })
 
 app.get("/animals/new", (req, res) => {
-    res.render("new");
+    res.render("animals/new");
 })
 
 app.get("/animals/:id", (req, res) => {
     let id = req.params.id;
-    Animal.findById(id, (err, animal) => {
+    Animal.findById(id).populate("comments").exec((err, animal) => {
         if (err) {
             res.send("error matching route id")
         } else {
-            let animalToShow = animal;
-            res.render("show", { animal: animalToShow });
+            res.render("animals/show", { animal: animal });
+        }
+    });
+})
+
+app.get("/animals/:id/comments/new", (req, res) => {
+    Animal.findById(req.params.id, (err, animal) => {
+        if (!err) {
+            res.render("comments/new", { animal: animal });
+        }
+    })
+})
+
+app.post("/animals/:id/comments", (req, res) => {
+    Animal.findById(req.params.id, (err, animal) => {
+        if (err) {
+            console.log("error matching route id")
+            res.redirect("/animals");
+        } else {
+            Comment.create(req.body.comment, (err, comment) => {
+                if (!err) {
+                    animal.comments.push(comment);
+                    animal.save();
+                    console.log("added new comment!")
+                    res.redirect("/animals/" + req.params.id);
+                }
+            })
         }
     });
 })

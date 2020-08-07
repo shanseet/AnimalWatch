@@ -2,3 +2,10 @@ body {
     background: #fafafa;
     padding-top: 5em;
 }
+
+.comment {
+    padding: 0.8em 0;
+}
+.comment-author {
+    color: #888;
+}

@@ -1,0 +1,46 @@
+<%- include ('../partials/header') %>
+
+<div class="container">
+    <div class="row">
+        <!-- sidebar -->
+        <div class="col-md-3">
+            <p class="lead">More info</p>
+            <ul class="list-group">
+                <li class="list-group-item active">Item 1</li>
+                <li class="list-group-item">Item 2</li>
+                <li class="list-group-item">Item 3</li>
+            </ul>
+        </div>
+        <!-- main content -->
+        <div class="col-md-9">
+            <div class="card w-100 mb-5">
+                <img class="card-img-top" src="<%= animal.image %>" alt="">
+                <div class="card-body">
+                    <h4 class="card-title"><%= animal.name %></h4>
+                    <p class="card-text"><%= animal.description %></p>
+                    <small class="text-muted">
+                        <span class="card-text">Rating: 4.8/5</span>
+                        <span class="float-right"><%= animal.comments.length %> review(s)</span>
+                    </small>
+                </div>
+            </div>
+            <div class="card p-4 w-100 bg-light">
+                <div class="text-right">
+                    <a type="button" class="btn btn-success btn-sm" href="/animals/<%=animal._id%>/comments/new">
+                        Leave a comment
+                    </a>
+                </div>
+                <hr>
+                <% animal.comments.forEach(comment => { %>
+                <div class="comment">
+                    <div class="comment-text"><%= comment.text %></div>
+                    <div class="comment-author">By <%= comment.author %></div>
+                </div>
+                <% }) %>
+            </div>
+            <a class="btn btn-primary my-3" href="/animals">Back to all animals</a>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials/footer') %>

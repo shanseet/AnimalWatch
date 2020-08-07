@@ -1,0 +1,18 @@
+<%- include ('../partials/header') %>
+
+<div class="w-50 mx-auto">
+    <form class="text-center py-3" action="/animals/<%=animal._id%>/comments" method="POST">
+        <h3>Write a comment for <%=animal.name%></h3>
+        <div class="form-group">
+            <input type="text" class="form-control" name="comment[text]" placeholder="Text">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="comment[author]" placeholder="Author">
+        </div>
+        <button type="submit" class="btn btn-success btn-block">Post comment</button>
+    </form>
+    <a class="btn btn-primary" href="/animals/<%=animal._id%>">Back to <%=animal.name%></a>
+</div>
+
+
+<%- include ('../partials/footer') %>
